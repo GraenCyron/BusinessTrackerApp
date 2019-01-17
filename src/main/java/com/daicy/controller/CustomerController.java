@@ -7,13 +7,12 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daicy.dto.CustomerDTO;
@@ -30,15 +29,23 @@ public class CustomerController {
     public ResponseEntity<String> saveCustomer(
             @Valid @RequestBody CustomerDTO customerDTO) {
 
-        customerService.saveCustomer(customerDTO.getFirstName(),
-                customerDTO.getLastName(), customerDTO.getContactNumber());
+        customerService.saveCustomer(customerDTO);
 
-        return new  ResponseEntity<>("Successfully Updated",
-                HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("New customer saved", HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/save-customer")
+    public ResponseEntity<String> updateCustomer(
+        @Valid @RequestBody CustomerDTO customerDTO) {
+
+        customerService.saveCustomer(customerDTO);
+
+        return new ResponseEntity<>("Customer has been updated",
+            HttpStatus.ACCEPTED);
+
     }
 
     @GetMapping("/get-customer-by-id/{id}")
-    @ResponseBody
     public ResponseEntity<CustomerDTO> getCustomerById(
             @PathVariable Long id) {
         return new ResponseEntity<>(customerService.getCustomerById(id),
@@ -46,7 +53,6 @@ public class CustomerController {
     }
 
     @GetMapping("/get-customer-by-lastname/{lastName}")
-    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<List<CustomerDTO>> getCustomerByLastName(
             @PathVariable String lastName) {
         return new ResponseEntity<>(

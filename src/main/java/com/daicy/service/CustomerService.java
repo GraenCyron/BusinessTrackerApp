@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.daicy.dto.CustomerDTO;
 import com.daicy.model.Customer;
 import com.daicy.repository.CustomerRepository;
+import com.daicy.util.ServiceHelper;
 
 @Service
 public class CustomerService {
@@ -16,10 +17,17 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public void saveCustomer(String firstName, String lastName,
-            String contactNumber) {
-        customerRepository.save(new Customer(
-                firstName, lastName, contactNumber));
+    @Autowired
+    private ServiceHelper serviceHelper;
+
+    /**
+     * Save/update customer
+     *
+     * @param customerDto
+     */
+    public void saveCustomer(CustomerDTO customerDto) {
+      customerRepository.save(
+          serviceHelper.dtoToEntityTranslator(customerDto));
     }
 
     public CustomerDTO getCustomerById(long id) {
